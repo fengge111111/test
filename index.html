@@ -1,25 +1,39 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <title>QR Code Scanner</title>
-    <script src="./html5-qrcode.min.js" type="text/javascript">
-</head>
+    <title>Html-Qrcode Demo</title>
 <body>
-	 <div>1111</div>
-    <div id="reader" style="width: 500px;height: 500px"></div>
-    <script>
-	
-		
-	
-		Html5Qrcode.getCameras().then(devices => {
-			console.log(devices)
-		  if (devices && devices.length) {
-		    var cameraId = devices[0].id;
-		    html5QrCode.start({ deviceId: { exact: cameraId} }, config, qrCodeSuccessCallback);
-		  }
-		}).catch(err => {
-		   console.log(err)
-		});
-    </script>
+    <div id="qr-reader" style="width:500px"></div>
+    <div id="qr-reader-results"></div>
 </body>
+<script src="/html5-qrcode.min.js"></script>
+<script>
+    function docReady(fn) {
+        // see if DOM is already available
+        if (document.readyState === "complete"
+            || document.readyState === "interactive") {
+            // call on next available tick
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    docReady(function () {
+        var resultContainer = document.getElementById('qr-reader-results');
+        var lastResult, countResults = 0;
+        function onScanSuccess(decodedText, decodedResult) {
+            if (decodedText !== lastResult) {
+                ++countResults;
+                lastResult = decodedText;
+                // Handle on success condition with the decoded message.
+                console.log(`Scan result ${decodedText}`, decodedResult);
+            }
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    });
+</script>
+</head>
 </html>
