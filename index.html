@@ -1,39 +1,68 @@
 <html>
 <head>
     <title>Html-Qrcode Demo</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<style>
+	#start-button{
+		width: 50vw;
+		height: 30vw;
+	}
+</style>
 <body>
     <div id="qr-reader" style="width:500px"></div>
     <div id="qr-reader-results"></div>
-</body>
-<script src="./html5-qrcode.min.js"></script>
-<script>
-    function docReady(fn) {
-        // see if DOM is already available
-        if (document.readyState === "complete"
-            || document.readyState === "interactive") {
-            // call on next available tick
-            setTimeout(fn, 1);
-        } else {
-            document.addEventListener("DOMContentLoaded", fn);
-        }
-    }
-
-    docReady(function () {
-        var resultContainer = document.getElementById('qr-reader-results');
-        var lastResult, countResults = 0;
-        function onScanSuccess(decodedText, decodedResult) {
-            if (decodedText !== lastResult) {
-                ++countResults;
-                lastResult = decodedText;
-                // Handle on success condition with the decoded message.
-                console.log(`Scan result ${decodedText}`, decodedResult);
+    <button id="start-button">开始扫码</button>
+    <script src="./html5-qrcode.min.js"></script>
+    <script>
+        function docReady(fn) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
             }
         }
+		
+		const config = {
+		  fps: 10, //  二维码扫描每秒帧数
+		  qrbox: { width: 300, height: 300 }, // UI框的大小
+		  aspectRatio: 1.777778,  // 纵横比,此值表示全屏
+		}
 
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(onScanSuccess);
-    });
-</script>
-</head>
+        docReady(function () {
+			var lastResult, countResults = 0;
+			function onScanSuccess(decodedText, decodedResult) {
+					$("qr-reader-results").val(decodedText)
+			}
+			var html5QrCode = new Html5Qrcode("qr-reader")
+			// 获取相机设备
+			let mydevices=null;
+			Html5Qrcode.getCameras()
+			  .then(devices => {
+				  mydevices = devices
+			  })
+			  .catch(err => {
+			    alert(err)
+			  })
+            $('#start-button').click(function() {
+                // 扫码配置
+                
+                if (devices && devices.length) {
+                  const cameraId = devices[devices.length - 1].id //后置摄像头，一般最后一个是后置摄像头
+                  //let cameraId = devices[0].id //前置摄像头
+                  // 打开相机，开始扫描，callbackSuccess, callbackFailure扫描成功与失败的回调函数（自行定义）
+                  html5QrCode.start({ deviceId: { exact: cameraId } }, config, onScanSuccess).catch(err => {
+                    alert(err)
+                  })
+				} else {
+				    // 如果没有找到设备，直接启用摄像头
+				    //environment：后置摄像头  user：前置摄像头
+				    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess).catch(err => {
+				      alert(err)
+				    })
+				}
+            });
+        });
+    </script>
+</body>
 </html>
