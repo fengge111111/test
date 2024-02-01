@@ -11,8 +11,8 @@
 </style>
 <body>
     <div id="qr-reader" style="width:500px"></div>
-    <div id="qr-reader-results"></div>
     <button id="start-button">开始扫码</button>
+	 <div id="qr-reader-results"></div>
     <script src="./html5-qrcode.min.js"></script>
     <script>
         function docReady(fn) {
@@ -33,7 +33,7 @@
 			var html5QrCode = new Html5Qrcode("qr-reader")
 			var lastResult, countResults = 0;
 			function onScanSuccess(decodedText, decodedResult) {
-					$("qr-reader-results").val(decodedText)
+					$("#qr-reader-results").val(decodedText)
 					html5QrCode.stop();
 					html5QrCode.clear();
 			}
