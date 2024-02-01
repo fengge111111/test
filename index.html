@@ -36,7 +36,7 @@
 			}
 			var html5QrCode = new Html5Qrcode("qr-reader")
 			// 获取相机设备
-			let mydevices=null;
+			var mydevices=null;
 			Html5Qrcode.getCameras()
 			  .then(devices => {
 				  mydevices = devices
@@ -47,8 +47,8 @@
             $('#start-button').click(function() {
                 // 扫码配置
                 
-                if (devices && devices.length) {
-                  const cameraId = devices[devices.length - 1].id //后置摄像头，一般最后一个是后置摄像头
+                if (mydevices && mydevices.length) {
+                  const cameraId = mydevices[mydevices.length - 1].id //后置摄像头，一般最后一个是后置摄像头
                   //let cameraId = devices[0].id //前置摄像头
                   // 打开相机，开始扫描，callbackSuccess, callbackFailure扫描成功与失败的回调函数（自行定义）
                   html5QrCode.start({ deviceId: { exact: cameraId } }, config, onScanSuccess).catch(err => {
