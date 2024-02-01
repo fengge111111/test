@@ -30,11 +30,13 @@
 		}
 
         docReady(function () {
+			var html5QrCode = new Html5Qrcode("qr-reader")
 			var lastResult, countResults = 0;
 			function onScanSuccess(decodedText, decodedResult) {
 					$("qr-reader-results").val(decodedText)
+					html5QrCode.stop();
+					html5QrCode.clear();
 			}
-			var html5QrCode = new Html5Qrcode("qr-reader")
 			// 获取相机设备
 			var mydevices=null;
 			Html5Qrcode.getCameras()
