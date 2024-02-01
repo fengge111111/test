@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code Scanner</title>
+    <script src="./html5-qrcode.min.js" type="text/javascript">
+</head>
+<body>
+    <div id="reader" style="width: 500px;height: 500px"></div>
+    <script>
+	
+		
+	
+		Html5Qrcode.getCameras().then(devices => {
+			console.log(devices)
+		  if (devices && devices.length) {
+		    var cameraId = devices[0].id;
+		    html5QrCode.start({ deviceId: { exact: cameraId} }, config, qrCodeSuccessCallback);
+		  }
+		}).catch(err => {
+		   console.log(err)
+		});
+    </script>
+</body>
+</html>
